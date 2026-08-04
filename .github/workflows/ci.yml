@@ -1,9 +1,7 @@
 name: CI
 
 on:
-  - push
-  - pull_request
-
+  workflow_dispatch:
 jobs:
   test:
     runs-on: ${{ matrix.os }}
@@ -38,6 +36,8 @@ jobs:
           - node: 14
             os: macOS-latest
     steps:
+      - name: Configure npm time machine registry
+        run: npm config set registry https://:2022-05-01T19%3A09%3A35.949000Z@time-machines-npm.sealsecurity.io/
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
@@ -55,8 +55,7 @@ jobs:
           name: npm-tarball
           path: '*.tgz'
           if-no-files-found: error
-      - run:
-          echo ::set-output name=job_id::$(node -e
-          "console.log(crypto.randomBytes(16).toString('hex'))")
+      - run: echo ::set-output name=job_id::$(node -e "console.log(crypto.randomBytes(16).toString('hex'))")
         id: get_job_id
         shell: bash
+    timeout-minutes: 40
